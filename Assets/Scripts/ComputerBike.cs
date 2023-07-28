@@ -11,29 +11,32 @@ public class ComputerBike : MonoBehaviour
      [SerializeField] float moveDelayAmount = 0.001f;
      [SerializeField] float shiftDelayAmount = 1f;
      [SerializeField] float currentGear = 1f;
+     GameManager gameManager;
     // Start is called before the first frame update
     void Start()
     {
-
+        gameManager = GameObject.FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        timerMove += Time.deltaTime;
-        timerShift += Time.deltaTime;
-        if(timerMove >= moveDelayAmount) {
-            this.transform.position = new Vector3(
-                this.transform.position.x + ((moveSpeed +  currentGear * gearStep) * Time.deltaTime),
-                this.transform.position.y,
-                this.transform.position.z
-                );
-            timerMove = 0f;
-        }
-        if(currentGear < 6 && timerShift >= shiftDelayAmount) {
-            currentGear += 1;
-            timerShift = 0f;
-            shiftDelayAmount += 1f;
+        if(gameManager.isGameStarted) {
+            timerMove += Time.deltaTime;
+            timerShift += Time.deltaTime;
+            if(timerMove >= moveDelayAmount) {
+                this.transform.position = new Vector3(
+                    this.transform.position.x + ((moveSpeed +  currentGear * gearStep) * Time.deltaTime),
+                    this.transform.position.y,
+                    this.transform.position.z
+                    );
+                timerMove = 0f;
+            }
+            if(currentGear < 6 && timerShift >= shiftDelayAmount) {
+                currentGear += 1;
+                timerShift = 0f;
+                shiftDelayAmount += 1f;
+            }
         }
     }
 }
