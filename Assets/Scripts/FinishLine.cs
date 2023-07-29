@@ -5,12 +5,13 @@ using UnityEngine;
 public class FinishLine : MonoBehaviour
 {
     public bool finishCrossed = false;
+    public bool hasPlayerWon;
     private void OnTriggerEnter2D(Collider2D other) {
         if(!finishCrossed) {
             if(other.tag == "Player") {
-                Debug.Log("Player won!");
+                hasPlayerWon = true;
             } else {
-                Debug.Log("Computer won");
+                hasPlayerWon = false;
             }
             finishCrossed = true;
         }

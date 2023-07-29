@@ -4,39 +4,36 @@ using UnityEngine;
 
 public class ComputerBike : MonoBehaviour
 {
-     [SerializeField] float moveSpeed = 5f;
-     [SerializeField] float gearStep = 2f;
-     float timerMove = 0f;
-     float timerShift = 0f;
-     [SerializeField] float moveDelayAmount = 0.001f;
-     [SerializeField] float shiftDelayAmount = 1f;
-     [SerializeField] float currentGear = 1f;
+     [SerializeField] int currentGear = 1;
      GameManager gameManager;
+     Animator animator;
+    [SerializeField] AnimationCurve[] speedPerGear;
+    float [] maxSpeeds = {5, 8, 12, 18, 23, 28};
+    float timePassed = 0f;
+    public float curSpeed = 0f;
+    public float delayAmount = 0f;
+    public float difficultyCoefficient = 0.1f;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         gameManager = GameObject.FindObjectOfType<GameManager>();
+        animator = GetComponent<Animator>();
+        animator.SetBool("isRiding", false);
     }
 
     // Update is called once per frame
     void Update()
     {
         if(gameManager.isGameStarted) {
-            timerMove += Time.deltaTime;
-            timerShift += Time.deltaTime;
-            if(timerMove >= moveDelayAmount) {
-                this.transform.position = new Vector3(
-                    this.transform.position.x + ((moveSpeed +  currentGear * gearStep) * Time.deltaTime),
-                    this.transform.position.y,
-                    this.transform.position.z
-                    );
-                timerMove = 0f;
-            }
-            if(currentGear < 6 && timerShift >= shiftDelayAmount) {
-                currentGear += 1;
-                timerShift = 0f;
-                shiftDelayAmount += 1f;
-            }
+            timePassed += Time.deltaTime - (Time.deltaTime * difficultyCoefficient);
+            Vector3 newPosition = this.transform.position;
+                curSpeed = (speedPerGear[currentGear - 1].Evaluate(timePassed));
+                if(curSpeed == maxSpeeds[currentGear - 1]) {
+                    currentGear++;
+                    timePassed = 0f;
+                }
+                newPosition.x += curSpeed * Time.deltaTime;
+                this.transform.position = newPosition;
         }
     }
 }

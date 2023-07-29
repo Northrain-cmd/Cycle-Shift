@@ -7,7 +7,6 @@ using TMPro;
 public class PlayerBike : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField] float gearStep = 2f;
     [SerializeField] AnimationCurve[] speedPerGear;
     [SerializeField] GameObject shiftNoticeTextObject;
     GameManager gameManager;
@@ -19,11 +18,20 @@ public class PlayerBike : MonoBehaviour
     public bool isShiftAllowed = false;
     public float curSpeed = 0f;
     bool isGameOver;
+    Animator animator;
     void Awake()
     {
+        animator = GetComponent<Animator>();
         gameManager = GameObject.FindObjectOfType<GameManager>();
-        gearSlider = GameObject.FindObjectOfType<Slider>();
         shiftNoticeText = shiftNoticeTextObject.GetComponent<TextMeshProUGUI>();
+        animator.SetBool("isRiding", false);
+    }
+
+    private void updateSlider(int value) {
+        if(GameObject.FindObjectOfType(typeof(Slider)) != null) {
+            gearSlider = GameObject.FindObjectOfType<Slider>();
+            gearSlider.value = value - 1;
+        }
     }
 
     // Update is called once per frame
@@ -32,6 +40,7 @@ public class PlayerBike : MonoBehaviour
         if(gameManager.isGameStarted) {
             isGameOver = gameManager.isGameOver;
             if(Input.GetKey(KeyCode.RightArrow)) {
+                animator.SetBool("isRiding", true);
                 timePassed += Time.deltaTime;
                 Vector3 newPosition = this.transform.position;
                 curSpeed = (speedPerGear[currentGear - 1].Evaluate(timePassed));
@@ -49,13 +58,16 @@ public class PlayerBike : MonoBehaviour
             }
             if(Input.GetKey(KeyCode.LeftArrow) || (Input.GetKeyUp(KeyCode.RightArrow))) {
                 timePassed = 0f;
+                currentGear = 1;
+                updateSlider(currentGear);
+                animator.SetBool("isRiding", false);
             }
             if(Input.GetKeyDown(KeyCode.Space) && isShiftAllowed) {
                 if(currentGear < 6) {
                     currentGear += 1;
-                    gearSlider.value += 1;
                     timePassed = 0f;
                     isShiftAllowed = false;
+                    updateSlider(currentGear);
                     if(! isGameOver) {
                         shiftNoticeText.text = "Gain speed to unlock next gear";
                         shiftNoticeTextObject.GetComponentInParent<Image>().color = new Color(0.96f,0.63f,0,1);
