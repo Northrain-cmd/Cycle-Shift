@@ -13,6 +13,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject gameOverUI;
     [SerializeField] GameObject startGameUI;
     [SerializeField] GameObject winLoseMessage;
+    [SerializeField] GameObject trafficLight;
+    Animator trafficLightAnimator;
+    [SerializeField] GameObject countdownTimer;
+    Animator countdownTimerAnimator;
+    bool countdownStarted = false;
     int difficulty;
 
     // Start is called before the first frame update
@@ -20,6 +25,10 @@ public class GameManager : MonoBehaviour
     {
         finishLine = GameObject.FindObjectOfType<FinishLine>();
         mainUI.SetActive(false);
+        countdownTimer.SetActive(true);
+        countdownTimerAnimator = countdownTimer.GetComponent<Animator>();
+        countdownTimer.SetActive(false);
+        trafficLightAnimator = trafficLight.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -36,17 +45,10 @@ public class GameManager : MonoBehaviour
 
             }
 
-        } else if(isGameStarted && !isGameOver) {
-            difficulty = startGameUI.GetComponentInChildren<SelectDifficulty>().setDifficulty;
-            mainUI.SetActive(true);
-            startGameUI.SetActive(false);
-        }
-         else {
-            gameOverUI.SetActive(false);
-            startGameUI.SetActive(true);
         }
         if(finishLine.finishCrossed) {
             isGameOver = true;
+            isGameStarted = false;
         }
     }
 
@@ -55,7 +57,23 @@ public class GameManager : MonoBehaviour
     }
 
     public void OnStartGame() {
+        startCountdown();
+    }
+
+    public void startCountdown() {
+        countdownStarted = true;
+        difficulty = startGameUI.GetComponentInChildren<SelectDifficulty>().setDifficulty;
+        mainUI.SetActive(true);
+        startGameUI.SetActive(false);
+        countdownTimer.SetActive(true);
+        trafficLightAnimator.SetBool("startCountdown", true);
+        Invoke("disableCountodwn", 3.05f);
+    }
+
+    private void disableCountodwn(){
+        countdownTimer.SetActive(false);
         isGameStarted = true;
+        trafficLightAnimator.SetBool("startCountdown", false);
     }
 
     public float getDifficultyLevel() {
