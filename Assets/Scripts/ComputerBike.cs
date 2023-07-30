@@ -25,7 +25,9 @@ public class ComputerBike : MonoBehaviour
     void Update()
     {
         if(gameManager.isGameStarted) {
+            difficultyCoefficient = gameManager.getDifficultyLevel();
             timePassed += Time.deltaTime - (Time.deltaTime * difficultyCoefficient);
+            animator.SetBool("isRiding", true);
             Vector3 newPosition = this.transform.position;
                 curSpeed = (speedPerGear[currentGear - 1].Evaluate(timePassed));
                 if(curSpeed == maxSpeeds[currentGear - 1]) {
