@@ -30,7 +30,7 @@ public class ComputerBike : MonoBehaviour
             animator.SetBool("isRiding", true);
             Vector3 newPosition = this.transform.position;
                 curSpeed = (speedPerGear[currentGear - 1].Evaluate(timePassed));
-                if(curSpeed == maxSpeeds[currentGear - 1]) {
+                if(curSpeed == maxSpeeds[currentGear - 1] && currentGear < 6) {
                     currentGear++;
                     timePassed = 0f;
                 }
