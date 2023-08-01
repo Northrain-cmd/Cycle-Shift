@@ -16,8 +16,10 @@ public class SpeedBoostSpawner : MonoBehaviour
 
     void SpawnSpeedBoost() {
         // Create a new speed boost object and instantiate it at a random position.
+        int rnadomNumber = Random.Range(0,2);
+        float[] lanes = new float[] {-7.13f, -8.57f};
         GameObject speedBoost = Instantiate(speedBoostPrefab,
-            new Vector2(Random.Range(-12f, 700f), Random.Range(-6.85f, -8.29f)),
+            new Vector2(Random.Range(-12f, 700f), lanes[rnadomNumber]),
            Quaternion.identity);
     }
 }

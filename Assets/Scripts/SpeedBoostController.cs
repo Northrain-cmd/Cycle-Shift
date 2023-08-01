@@ -18,4 +18,13 @@ public class SpeedBoostController : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D other) {
+        Debug.Log("Boosting");
+        if(other.tag == "Player") {
+            gameManager.boost("Player");
+        } else {
+            gameManager.boost("Computer");
+        }
+    }
 }

@@ -9,6 +9,10 @@ public class PlayerBike : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField] AnimationCurve[] speedPerGear;
     [SerializeField] GameObject shiftNoticeTextObject;
+    [Header("Boost")]
+    [SerializeField] float boostSpeed = 0f;
+    [SerializeField] float boostTime = 1f;
+    [Header("Rest")]
     GameManager gameManager;
     TextMeshProUGUI shiftNoticeText;
     float [] maxSpeeds = {5, 8, 12, 18, 23, 28};
@@ -20,12 +24,15 @@ public class PlayerBike : MonoBehaviour
     bool isGameOver;
     public bool isBikeOnRoad = true;
     Animator animator;
+    AudioSource audio;
+    [SerializeField] AudioClip shiftGearSound;
     void Awake()
     {
         animator = GetComponent<Animator>();
         gameManager = GameObject.FindObjectOfType<GameManager>();
         shiftNoticeText = shiftNoticeTextObject.GetComponent<TextMeshProUGUI>();
         animator.SetBool("isRiding", false);
+        audio = GetComponent<AudioSource>();
     }
 
     private void updateSlider(int value) {
@@ -48,7 +55,8 @@ public class PlayerBike : MonoBehaviour
                 timePassed += Time.deltaTime;
                 Vector3 newPosition = this.transform.position;
                 curSpeed = (speedPerGear[currentGear - 1].Evaluate(timePassed));
-                if(curSpeed == maxSpeeds[currentGear - 1]) {
+                curSpeed += boostSpeed;
+                if(curSpeed >= maxSpeeds[currentGear - 1]) {
                     isShiftAllowed = true;
                     if(!isGameOver && currentGear < 6) {
                         shiftNoticeText.text = "Press Space!";
@@ -78,6 +86,8 @@ public class PlayerBike : MonoBehaviour
             }
             if(Input.GetKeyDown(KeyCode.Space) && isShiftAllowed && isBikeOnRoad) {
                 if(currentGear < 6) {
+                    audio.PlayOneShot(shiftGearSound);
+                    deboost();
                     currentGear += 1;
                     timePassed = 0f;
                     isShiftAllowed = false;
@@ -97,4 +107,18 @@ public class PlayerBike : MonoBehaviour
           updateSlider(currentGear);
         }
     }
+
+    public void boost() {
+        boostSpeed = 5f;
+        Invoke(nameof(deboost), boostTime);
+    }
+
+    private void deboost() {
+        boostSpeed = 0f;
+        if(currentGear < 6) {
+            timePassed -= boostTime;
+        }
+    }
+
+
 }

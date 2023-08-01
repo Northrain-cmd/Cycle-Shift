@@ -14,8 +14,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject startGameUI;
     [SerializeField] GameObject winLoseMessage;
     [SerializeField] GameObject trafficLight;
+    AudioSource trafficLightSource;
     SpeedBoostSpawner speedBoostSpawner;
     PlayerBike playerBike;
+    ComputerBike computerBike;
     Animator trafficLightAnimator;
     [SerializeField] GameObject countdownTimer;
     Animator countdownTimerAnimator;
@@ -24,6 +26,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        trafficLightSource = trafficLight.GetComponentInParent<AudioSource>();
         finishLine = GameObject.FindObjectOfType<FinishLine>();
         mainUI.SetActive(false);
         countdownTimer.SetActive(true);
@@ -31,6 +34,7 @@ public class GameManager : MonoBehaviour
         countdownTimer.SetActive(false);
         trafficLightAnimator = trafficLight.GetComponent<Animator>();
         playerBike = GameObject.FindObjectOfType<PlayerBike>();
+        computerBike = GameObject.FindObjectOfType<ComputerBike>();
         speedBoostSpawner = GameObject.FindObjectOfType<SpeedBoostSpawner>();
     }
 
@@ -65,6 +69,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void startCountdown() {
+        trafficLightSource.Play();
         difficulty = startGameUI.GetComponentInChildren<SelectDifficulty>().setDifficulty;
         mainUI.SetActive(true);
         startGameUI.SetActive(false);
@@ -99,6 +104,14 @@ public class GameManager : MonoBehaviour
     public void BikeIsOnRoad(string bike) {
         if(bike == "Player") {
             playerBike.isBikeOnRoad = true;
+        }
+    }
+
+    public void boost(string bike) {
+        if(bike == "Player") {
+            playerBike.boost();
+        } else {
+            computerBike.boost();
         }
     }
 
