@@ -109,11 +109,13 @@ public class PlayerBike : MonoBehaviour
     }
 
     public void boost() {
+        animator.SetBool("isBoosting", true);
         boostSpeed = 5f;
         Invoke(nameof(deboost), boostTime);
     }
 
     private void deboost() {
+        animator.SetBool("isBoosting", false);
         boostSpeed = 0f;
         if(currentGear < 6) {
             timePassed -= boostTime;
