@@ -122,5 +122,12 @@ public class PlayerBike : MonoBehaviour
         }
     }
 
+    public void HitObstacle() {
+        if(animator.GetBool("isBoosting")) {
+            deboost();
+        }
+        ReduceGear();
+    }
+
 
 }

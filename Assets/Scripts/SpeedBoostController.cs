@@ -22,7 +22,6 @@ public class SpeedBoostController : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        Debug.Log("Boosting");
         if(other.GetType() == typeof(EdgeCollider2D)) {
             if(other.tag == "Player") {
             gameManager.boost("Player");

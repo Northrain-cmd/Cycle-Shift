@@ -12,6 +12,7 @@ public class ComputerBike : MonoBehaviour
     [SerializeField] float boostTime = 1f;
     float [] maxSpeeds = {5, 8, 12, 18, 23, 28};
     float timePassed = 0f;
+    bool isInLeftLane = true;
     public float curSpeed = 0f;
     public float difficultyCoefficient = 0.1f;
     // Start is called before the first frame update
@@ -26,6 +27,8 @@ public class ComputerBike : MonoBehaviour
     void Update()
     {
         if(gameManager.isGameStarted) {
+            checkLane();
+            ChangeLane();
             difficultyCoefficient = gameManager.getDifficultyLevel();
             timePassed += Time.deltaTime - (Time.deltaTime * difficultyCoefficient);
             animator.SetBool("isRiding", true);
@@ -55,4 +58,39 @@ public class ComputerBike : MonoBehaviour
             timePassed -= boostTime;
         }
     }
+
+     public void HitObstacle() {
+        if(animator.GetBool("isBoosting")) {
+            deboost();
+        }
+        if(currentGear > 1) {
+            timePassed -= Time.deltaTime;
+            currentGear -= 1;
+        }
+        //changeLane();
+    }
+
+    private void FixedUpdate() {
+
+    }
+
+    private void checkLane() {
+        if(transform.position.y == -6.95f) {
+            isInLeftLane = true;
+        } else if(transform.position.y == -8.48f) {
+            isInLeftLane = false;
+        }
+    }
+
+    private void ChangeLane() {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 5f, LayerMask.GetMask("Obstacle"));
+        if(hit.collider != null) {
+            Vector3 targetPosition = transform.position;
+            if(isInLeftLane) {
+                    targetPosition.y = -8.48f;
+                    transform.position = targetPosition;
+            }
+        }
+    }
+
 }
