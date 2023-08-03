@@ -96,13 +96,13 @@ public class GameManager : MonoBehaviour
     public Dictionary<string, float> getDifficultyLevel() {
         if(difficulty == 1) {
             difficultySettings["shiftSpeed"] = 0.1f;
-            difficultySettings["obstaclesSpawnNumber"] = 10f;
+            difficultySettings["obstaclesSpawnNumber"] = 5f;
         } else if(difficulty == 2) {
             difficultySettings["shiftSpeed"] = 0.08f;
-            difficultySettings["obstaclesSpawnNumber"] = 25f;
+            difficultySettings["obstaclesSpawnNumber"] = 10f;
         } else {
             difficultySettings["shiftSpeed"] = 0.06f;
-            difficultySettings["obstaclesSpawnNumber"] = 50f;
+            difficultySettings["obstaclesSpawnNumber"] = 20f;
         }
         return difficultySettings;
     }
