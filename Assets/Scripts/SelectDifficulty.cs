@@ -10,12 +10,13 @@ public class SelectDifficulty : MonoBehaviour
     [SerializeField] GameObject easyToggle;
     [SerializeField] GameObject medToggle;
     [SerializeField] GameObject hardToggle;
+    GameManager gameManager;
     Toggle easyToggleComp;
     Toggle medToggleComp;
     Toggle hardToggleComp;
-    public int setDifficulty = 1;
-    void Start()
+    void Awake()
     {
+        gameManager = GameObject.FindObjectOfType<GameManager>();
         toggleGroup = this.GetComponent<ToggleGroup>();
         easyToggleComp = easyToggle.GetComponent<Toggle>();
         medToggleComp = medToggle.GetComponent<Toggle>();
@@ -30,11 +31,11 @@ public class SelectDifficulty : MonoBehaviour
 
     public void onToggleClick(GameObject clickedOn) {
         if(medToggleComp.isOn == true) {
-            setDifficulty = 2;
+            gameManager.difficulty = 2;
         } else if(hardToggleComp.isOn == true) {
-            setDifficulty = 3;
+            gameManager.difficulty = 3;
         } else{
-            setDifficulty = 1;
+            gameManager.difficulty = 1;
         }
     }
 }

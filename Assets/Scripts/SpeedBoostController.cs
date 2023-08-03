@@ -5,11 +5,11 @@ using UnityEngine;
 public class SpeedBoostController : MonoBehaviour
 {
     GameManager gameManager;
-    AudioSource audio;
+    AudioSource audioSource;
     // Start is called before the first frame update
     void Awake()
     {
-        audio = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
         gameManager = GameObject.FindObjectOfType<GameManager>();
     }
 
@@ -25,7 +25,7 @@ public class SpeedBoostController : MonoBehaviour
         if(other.GetType() == typeof(EdgeCollider2D)) {
             if(other.tag == "Player") {
             gameManager.boost("Player");
-            audio.Play();
+            audioSource.Play();
             } else {
             gameManager.boost("Computer");
         }

@@ -29,12 +29,12 @@ public class ComputerBike : MonoBehaviour
         if(gameManager.isGameStarted) {
             checkLane();
             ChangeLane();
-            difficultyCoefficient = gameManager.getDifficultyLevel();
+            difficultyCoefficient = gameManager.getDifficultyLevel()["shiftSpeed"];
             timePassed += Time.deltaTime - (Time.deltaTime * difficultyCoefficient);
             animator.SetBool("isRiding", true);
             Vector3 newPosition = this.transform.position;
                 curSpeed = (speedPerGear[currentGear - 1].Evaluate(timePassed)) + boostSpeed;
-               // Debug.Log(curSpeed);
+               Debug.Log(curSpeed);
                 if(curSpeed >= maxSpeeds[currentGear - 1] && currentGear < 6) {
                     deboost();
                     currentGear++;
@@ -42,6 +42,9 @@ public class ComputerBike : MonoBehaviour
                 }
                 newPosition.x += curSpeed * Time.deltaTime;
                 this.transform.position = newPosition;
+        }
+        if(gameManager.isGameOver) {
+            animator.SetBool("isRiding", false);
         }
     }
 
@@ -67,30 +70,40 @@ public class ComputerBike : MonoBehaviour
             timePassed -= Time.deltaTime;
             currentGear -= 1;
         }
-        //changeLane();
     }
 
-    private void FixedUpdate() {
-
-    }
 
     private void checkLane() {
-        if(transform.position.y == -6.95f) {
+        if(transform.position.y == -7f) {
             isInLeftLane = true;
-        } else if(transform.position.y == -8.48f) {
+        } else if(transform.position.y == -8.5f) {
             isInLeftLane = false;
         }
     }
 
     private void ChangeLane() {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 5f, LayerMask.GetMask("Obstacle"));
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 2f, LayerMask.GetMask("Obstacle"));
         if(hit.collider != null) {
-            Vector3 targetPosition = transform.position;
+            Vector2 targetPosition = transform.position;
             if(isInLeftLane) {
-                    targetPosition.y = -8.48f;
-                    transform.position = targetPosition;
+                targetPosition.y = -8.5f;
+            } else {
+                targetPosition.y = -7f;
             }
+            StartCoroutine(Transition(targetPosition, 0.25f));
         }
+
     }
 
+    IEnumerator Transition(Vector2 targetPosition, float duration) {
+        float time = 0;
+        Vector2 startPosition = transform.position;
+            while(time < duration) {
+                transform.position = Vector2.Lerp(startPosition, targetPosition, time/duration);
+                time += Time.deltaTime;
+                yield return null;
+        }
+        transform.position = targetPosition;
+        timePassed -= timePassed * 0.2f;
+    }
 }

@@ -16,16 +16,23 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject trafficLight;
     AudioSource trafficLightSource;
     SpeedBoostSpawner speedBoostSpawner;
+    ObstacleSpawner obstacleSpawner;
     PlayerBike playerBike;
     ComputerBike computerBike;
     Animator trafficLightAnimator;
     [SerializeField] GameObject countdownTimer;
     Animator countdownTimerAnimator;
-    int difficulty;
+    public int difficulty;
+    public Dictionary<string, float> difficultySettings;
+
 
     // Start is called before the first frame update
     void Awake()
     {
+        difficulty = 1;
+        difficultySettings = new Dictionary<string, float>();
+        difficultySettings.Add("shiftSpeed", 0.1f);
+        difficultySettings.Add("obstaclesSpawnNumber", 10f);
         trafficLightSource = trafficLight.GetComponentInParent<AudioSource>();
         finishLine = GameObject.FindObjectOfType<FinishLine>();
         mainUI.SetActive(false);
@@ -36,6 +43,7 @@ public class GameManager : MonoBehaviour
         playerBike = GameObject.FindObjectOfType<PlayerBike>();
         computerBike = GameObject.FindObjectOfType<ComputerBike>();
         speedBoostSpawner = GameObject.FindObjectOfType<SpeedBoostSpawner>();
+        obstacleSpawner = GameObject.FindObjectOfType<ObstacleSpawner>();
     }
 
     // Update is called once per frame
@@ -64,13 +72,14 @@ public class GameManager : MonoBehaviour
     }
 
     public void OnStartGame() {
+        difficultySettings = getDifficultyLevel();
         startCountdown();
         speedBoostSpawner.spawnBoosts();
+        obstacleSpawner.spawnObstacles();
     }
 
     public void startCountdown() {
         trafficLightSource.Play();
-        difficulty = startGameUI.GetComponentInChildren<SelectDifficulty>().setDifficulty;
         mainUI.SetActive(true);
         startGameUI.SetActive(false);
         countdownTimer.SetActive(true);
@@ -84,14 +93,18 @@ public class GameManager : MonoBehaviour
         trafficLightAnimator.SetBool("startCountdown", false);
     }
 
-    public float getDifficultyLevel() {
+    public Dictionary<string, float> getDifficultyLevel() {
         if(difficulty == 1) {
-            return 0.1f;
+            difficultySettings["shiftSpeed"] = 0.1f;
+            difficultySettings["obstaclesSpawnNumber"] = 10f;
         } else if(difficulty == 2) {
-            return 0.08f;
+            difficultySettings["shiftSpeed"] = 0.08f;
+            difficultySettings["obstaclesSpawnNumber"] = 25f;
         } else {
-            return 0.06f;
+            difficultySettings["shiftSpeed"] = 0.06f;
+            difficultySettings["obstaclesSpawnNumber"] = 50f;
         }
+        return difficultySettings;
     }
 
     public void BikeIsOffroad(string bike) {

@@ -12,6 +12,7 @@ public class PlayerBike : MonoBehaviour
     [Header("Boost")]
     [SerializeField] float boostSpeed = 0f;
     [SerializeField] float boostTime = 1f;
+    [SerializeField] TextMeshProUGUI SpeedometerText;
     [Header("Rest")]
     GameManager gameManager;
     TextMeshProUGUI shiftNoticeText;
@@ -24,7 +25,7 @@ public class PlayerBike : MonoBehaviour
     bool isGameOver;
     public bool isBikeOnRoad = true;
     Animator animator;
-    AudioSource audio;
+    AudioSource audioSource;
     [SerializeField] AudioClip shiftGearSound;
     void Awake()
     {
@@ -32,7 +33,7 @@ public class PlayerBike : MonoBehaviour
         gameManager = GameObject.FindObjectOfType<GameManager>();
         shiftNoticeText = shiftNoticeTextObject.GetComponent<TextMeshProUGUI>();
         animator.SetBool("isRiding", false);
-        audio = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void updateSlider(int value) {
@@ -64,7 +65,7 @@ public class PlayerBike : MonoBehaviour
                     }
 
                 }
-                Debug.Log(curSpeed);
+                SpeedometerText.text = curSpeed.ToString("#.#") + " km/h";
                 newPosition.x += curSpeed * Time.deltaTime;
                 this.transform.position = newPosition;
             }
@@ -86,7 +87,7 @@ public class PlayerBike : MonoBehaviour
             }
             if(Input.GetKeyDown(KeyCode.Space) && isShiftAllowed && isBikeOnRoad) {
                 if(currentGear < 6) {
-                    audio.PlayOneShot(shiftGearSound);
+                    audioSource.PlayOneShot(shiftGearSound);
                     deboost();
                     currentGear += 1;
                     timePassed = 0f;

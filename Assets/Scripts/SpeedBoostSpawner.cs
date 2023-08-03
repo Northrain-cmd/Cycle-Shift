@@ -5,8 +5,6 @@ using UnityEngine;
 public class SpeedBoostSpawner : MonoBehaviour
 {
     public GameObject speedBoostPrefab;
-    public float spawnRate = 1f;
-    public float spawnInterval = 1f;
 
     public void spawnBoosts() {
         for(int i = 0; i < 10; i++) {
