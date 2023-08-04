@@ -95,13 +95,13 @@ public class GameManager : MonoBehaviour
 
     public Dictionary<string, float> getDifficultyLevel() {
         if(difficulty == 1) {
-            difficultySettings["shiftSpeed"] = 0.1f;
+            difficultySettings["shiftSpeed"] = 0.35f;
             difficultySettings["obstaclesSpawnNumber"] = 5f;
         } else if(difficulty == 2) {
-            difficultySettings["shiftSpeed"] = 0.08f;
+            difficultySettings["shiftSpeed"] = 0.25f;
             difficultySettings["obstaclesSpawnNumber"] = 10f;
         } else {
-            difficultySettings["shiftSpeed"] = 0.06f;
+            difficultySettings["shiftSpeed"] = 0.15f;
             difficultySettings["obstaclesSpawnNumber"] = 20f;
         }
         return difficultySettings;
@@ -127,7 +127,5 @@ public class GameManager : MonoBehaviour
             computerBike.boost();
         }
     }
-
-
 
 }
